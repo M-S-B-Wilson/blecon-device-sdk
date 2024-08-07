@@ -7,6 +7,9 @@
 #include <zephyr/sys/printk.h>
 #include <zephyr/shell/shell.h>
 
+#include <stdint.h>
+#include <time.h>
+
 #include "stdio.h"
 #include "string.h"
 #include "stdlib.h"
@@ -78,7 +81,7 @@ void example_on_connection(struct blecon_t* blecon) {
     blecon_request_cleanup(&_request);
     
     // Create message
-    sprintf((char*)_outgoing_data_buffer, "Hello blecon!");
+    sprintf((char*)_outgoing_data_buffer, "Hello Blecon from NZ!");
 
     // Create send data operation
     if(!blecon_request_send_data(&_send_op, &_request, _outgoing_data_buffer,
@@ -103,8 +106,30 @@ void example_on_disconnection(struct blecon_t* blecon) {
     printk("Disconnected\r\n");
 }
 
+// Function to convert UTC time in milliseconds to a date and time string
+void utc_to_date_time_string(uint64_t utc_time_ms, char* buffer, size_t buffer_size) {
+    time_t utc_time_s = utc_time_ms / 1000; // Convert milliseconds to seconds
+    struct tm* tm_info = gmtime(&utc_time_s);    // Convert to struct tm
+    strftime(buffer, buffer_size, "%Y-%m-%d %H:%M:%S", tm_info);    // Format the date and time string
+}
+
 void example_on_time_update(struct blecon_t* blecon) {
-    printk("Time update\r\n");
+    #define TIME_STRING_SIZE 100  
+    uint64_t utc_time_ms_now;
+    uint64_t utc_time_ms_last_updated;
+    bool time_valid;
+    char date_time_str[TIME_STRING_SIZE];
+
+    if(blecon_get_time(blecon, &time_valid, &utc_time_ms_now, &utc_time_ms_last_updated))
+    {
+       utc_to_date_time_string(utc_time_ms_now, date_time_str, TIME_STRING_SIZE);
+       printk("Date and Time: %s. UTC time now: %llu\r\n", date_time_str, utc_time_ms_now/1000);
+    }
+    else
+    {
+        printk("Failed to get time\r\n");
+    }
+//    printk("Time update\r\n");
 }
 
 void example_on_ping_result(struct blecon_t* blecon) {}

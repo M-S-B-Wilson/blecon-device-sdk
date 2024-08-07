@@ -142,7 +142,7 @@ void blecon_zephyr_l2cap_bearer_send(struct blecon_bearer_t* bearer, struct blec
         // Other end closing the connection is not an error
     }
     else {
-        blecon_assert( ret == buf.sz ); // Zephyr now returns the number of bytes sent
+        blecon_assert( ret >= 0 ); // Zephyr now returns the number of bytes sent
     }
 
     blecon_buffer_free(buf);

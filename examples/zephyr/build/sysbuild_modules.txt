@@ -1,0 +1,1 @@
+"nrf":"C:/Users/marks/nrf":"C:/Users/marks/nrf/sysbuild"

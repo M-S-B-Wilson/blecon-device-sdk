@@ -1,0 +1,2 @@
+osource "c:/users/marks/blecon-device-sdk/examples/zephyr/boards/shields/*/Kconfig.defconfig"
+osource "C:/Users/marks/nrf/boards/shields/*/Kconfig.defconfig"
